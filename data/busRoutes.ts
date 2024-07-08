@@ -2,6 +2,7 @@ export const busRoutes = [
   {
     id: 1,
     name: "8 Bangkok-chainat",
+    schedule: ["08:00 AM", "10:00 AM", "12:00 PM", "02:00 PM"],
     coordinates: [
       {
         latitude: 14.48073307,
@@ -236,6 +237,7 @@ export const busRoutes = [
   {
     id: 2,
     name: "15 phamok-bangkok",
+    schedule: ["07:00 AM", "09:00 AM", "11:00 AM", "01:00 PM"],
     coordinates: [
       {
         latitude: 14.49624133,
@@ -286,6 +288,7 @@ export const busRoutes = [
   {
     id: 3,
     name: "2231 Ang Thong - mahanam",
+    schedule: ["08:30 AM", "10:30 AM", "12:30 PM", "02:30 PM"],
     coordinates: [
       {
         latitude: 14.57996106,
@@ -632,6 +635,7 @@ export const busRoutes = [
   {
     id: 4,
     name: "464 -suphanburi-saraburi",
+    schedule: ["09:00 AM", "11:00 AM", "01:00 PM", "03:00 PM"],
     coordinates: [
       {
         latitude: 14.46970474,

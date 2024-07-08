@@ -5235,7 +5235,7 @@ __metadata:
     react-native-maps: "npm:^1.15.6"
     react-native-push-notification: "npm:^8.1.1"
     react-native-reanimated: "npm:~3.10.1"
-    react-native-safe-area-context: "npm:4.10.1"
+    react-native-safe-area-context: "npm:^4.10.7"
     react-native-screens: "npm:~3.31.1"
     react-native-svg: "npm:15.2.0"
     react-native-web: "npm:^0.19.12"
@@ -10739,13 +10739,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-safe-area-context@npm:4.10.1":
-  version: 4.10.1
-  resolution: "react-native-safe-area-context@npm:4.10.1"
+"react-native-safe-area-context@npm:^4.10.7":
+  version: 4.10.7
+  resolution: "react-native-safe-area-context@npm:4.10.7"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 89254daa2a4f35a7acffd20d9e42ea859f835d15b37f432c6aae2a1187a4675e3f91c6539cac21720f3746d851744f413a1c33c5a693f860f615bc880d3077f7
+  checksum: 555092f0bcc9254b9a6686228b08658edb89890e45585533f4953e9344a7d55f5d93c7595d14d554f8646e7748210a33134ee8ca4fe88cdc48922234a7d49be1
   languageName: node
   linkType: hard
 

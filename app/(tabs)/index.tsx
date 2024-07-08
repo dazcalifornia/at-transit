@@ -4,6 +4,8 @@ import {
   ExternalLink,
   ChevronUp,
   MapPin,
+  Check,
+  Bus,
 } from "@tamagui/lucide-icons";
 import {
   Anchor,
@@ -17,6 +19,8 @@ import {
   Text,
   ListItem,
   View,
+  SizableText,
+  Image,
 } from "tamagui";
 import { ToastControl } from "app/CurrentToast";
 import MapView, { Polygon, Marker, Callout } from "react-native-maps";
@@ -68,6 +72,33 @@ const distanceToSegment = (point, start, end) => {
   return Math.sqrt(dx * dx + dy * dy);
 };
 
+// Advertisement Component
+const AdComponent = () => (
+  <View
+    style={{
+      position: "absolute",
+      top: 90,
+      right: 20,
+      backgroundColor: "white",
+      padding: 10,
+      borderRadius: 8,
+      borderColor: "#ccc",
+      borderWidth: 0.5,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+    }}
+  >
+    <Image
+      source={{ uri: "https://via.placeholder.com/150" }} // Replace with your ad image URL
+      style={{ width: 150, height: 90, borderRadius: 8 }}
+      resizeMode="contain"
+    />
+  </View>
+);
+
 export default function TabOneScreen() {
   const [open, setOpen] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState(null);
@@ -96,8 +127,8 @@ export default function TabOneScreen() {
         {selectedRoute && (
           <Polygon
             coordinates={selectedRoute.coordinates}
-            strokeColor="rgba(0,0,255,0.5)"
-            strokeWidth={2}
+            strokeColor="rgba(33, 150, 243 ,0.7)"
+            strokeWidth={3}
           />
         )}
         {nearbyStops.map((stop, index) => (
@@ -129,6 +160,7 @@ export default function TabOneScreen() {
               >
                 <Text
                   style={{
+                    color: "#007AFF",
                     fontWeight: "bold",
                     fontSize: 16,
                     marginBottom: 5,
@@ -137,7 +169,7 @@ export default function TabOneScreen() {
                 >
                   {stop.highway_name}
                 </Text>
-                <Text style={{ textAlign: "right" }}>
+                <Text style={{ textAlign: "right", color: "#007AFF" }}>
                   Position: {stop.position_km}
                 </Text>
               </View>
@@ -145,22 +177,26 @@ export default function TabOneScreen() {
           </Marker>
         ))}
       </MapView>
-
       <Button
         icon={ChevronUp}
         size="$6"
         circular
         onPress={() => setOpen(true)}
-        style={{ position: "absolute", bottom: 20, alignSelf: "center" }}
+        style={{
+          position: "absolute",
+          bottom: 20,
+          alignSelf: "center",
+          marginBottom: 80,
+        }}
       />
-
+      <AdComponent />
       <Sheet
         modal
         open={open}
         onOpenChange={setOpen}
-        snapPoints={[50, 90]}
-        dismissOnSnapToBottom
+        snapPoints={[70, 80]}
         zIndex={100000}
+        disableDrag
         animation="medium"
       >
         <Sheet.Overlay />
@@ -170,15 +206,13 @@ export default function TabOneScreen() {
             Select a Route
           </H2>
           <ScrollView
-            style={{ width: "100%" }}
+            style={{ width: "auto" }}
             showsVerticalScrollIndicator={false}
           >
             <YStack space="$2">
               {busRoutes.map((route, index) => (
                 <ListItem
                   key={index}
-                  title={route.name}
-                  subTitle={`Route ${route.id}`}
                   onPress={() => {
                     setSelectedRoute(route);
                     setOpen(false);
@@ -187,10 +221,28 @@ export default function TabOneScreen() {
                     selectedRoute === route ? "$blue100" : "$backgroundStrong"
                   }
                   pressStyle={{ backgroundColor: "$blue200" }}
-                  iconAfter={
-                    selectedRoute === route ? <Activity size="$1" /> : null
-                  }
-                />
+                  style={{ borderRadius: 10 }}
+                >
+                  <XStack ai="center" space="$2">
+                    <Bus size="$2" color="#007AFF" />
+                    <YStack>
+                      <SizableText
+                        fontWeight="bold"
+                        color={selectedRoute === route ? "#007AFF" : "$color"}
+                      >
+                        {route.name}
+                      </SizableText>
+                      <SizableText
+                        color={selectedRoute === route ? "#007AFF" : "$color"}
+                      >
+                        Route {route.id}
+                      </SizableText>
+                    </YStack>
+                    {selectedRoute === route && (
+                      <Check size="$2" color="#007AFF" />
+                    )}
+                  </XStack>
+                </ListItem>
               ))}
             </YStack>
           </ScrollView>
