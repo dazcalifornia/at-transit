@@ -6,6 +6,7 @@ import {
   MapPin,
   Check,
   Bus,
+  Settings,
 } from "@tamagui/lucide-icons";
 import {
   Anchor,
@@ -22,7 +23,7 @@ import {
   SizableText,
   Image,
 } from "tamagui";
-import { ToastControl } from "app/CurrentToast";
+import { useNavigation } from "@react-navigation/native";
 import MapView, { Polygon, Marker, Callout } from "react-native-maps";
 import { busRoutes } from "data/busRoutes";
 import { busStops } from "data/busStops";
@@ -103,6 +104,8 @@ export default function TabOneScreen() {
   const [open, setOpen] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState(null);
   const [nearbyStops, setNearbyStops] = useState([]);
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (selectedRoute) {
@@ -189,6 +192,19 @@ export default function TabOneScreen() {
           marginBottom: 80,
         }}
       />
+      <Button
+        icon={Settings}
+        size="$6"
+        circular
+        onPress={() => navigation.navigate("setting")}
+        style={{
+          position: "absolute",
+          bottom: 20,
+          right: 20,
+          alignSelf: "center",
+          marginBottom: 80,
+        }}
+      />
       <AdComponent />
       <Sheet
         modal
@@ -209,7 +225,7 @@ export default function TabOneScreen() {
             style={{ width: "auto" }}
             showsVerticalScrollIndicator={false}
           >
-            <YStack space="$2">
+            <YStack space="$2" mb="$4">
               {busRoutes.map((route, index) => (
                 <ListItem
                   key={index}

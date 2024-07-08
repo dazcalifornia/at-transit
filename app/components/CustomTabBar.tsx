@@ -9,6 +9,7 @@ import {
   CalendarCheck2,
   Map,
   Table,
+  Info,
 } from "@tamagui/lucide-icons";
 
 function CustomTabBar({ state, descriptors, navigation }) {
@@ -83,7 +84,8 @@ function getIconComponent(routeName) {
     case "three":
       return Table;
     case "four":
-      return User;
+      return Settings;
+
     default:
       return Home;
   }

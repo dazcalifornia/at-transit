@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
 import { useTheme } from "tamagui";
-import { CalendarCheck2, Map } from "@tamagui/lucide-icons";
+import { CalendarCheck2, Map, Settings, Table } from "@tamagui/lucide-icons";
 import CustomTabBar from "../components/CustomTabBar";
 
 export default function TabLayout() {
@@ -34,10 +34,11 @@ export default function TabLayout() {
         name="three"
         options={{
           title: "Schedule",
-          tabBarIcon: ({ color }) => <CalendarCheck2 color={color} />,
+          tabBarIcon: ({ color }) => <Table color={color} />,
           headerShown: false,
         }}
       />
+
       {/* Add more screens as needed */}
     </Tabs>
   );
