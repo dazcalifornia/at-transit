@@ -23,8 +23,7 @@ import {
   SizableText,
   Image,
 } from "tamagui";
-import { useNavigation } from "@react-navigation/native";
-import MapView, { Polygon, Marker, Callout } from "react-native-maps";
+import MapView, { Polyline, Marker, Callout } from "react-native-maps";
 import { busRoutes } from "data/busRoutes";
 import { busStops } from "data/busStops";
 
@@ -105,8 +104,6 @@ export default function TabOneScreen() {
   const [selectedRoute, setSelectedRoute] = useState(null);
   const [nearbyStops, setNearbyStops] = useState([]);
 
-  const navigation = useNavigation();
-
   useEffect(() => {
     if (selectedRoute) {
       const stops = busStops.filter((stop) =>
@@ -128,7 +125,7 @@ export default function TabOneScreen() {
         }}
       >
         {selectedRoute && (
-          <Polygon
+          <Polyline
             coordinates={selectedRoute.coordinates}
             strokeColor="rgba(33, 150, 243 ,0.7)"
             strokeWidth={3}
@@ -188,19 +185,6 @@ export default function TabOneScreen() {
         style={{
           position: "absolute",
           bottom: 20,
-          alignSelf: "center",
-          marginBottom: 80,
-        }}
-      />
-      <Button
-        icon={Settings}
-        size="$6"
-        circular
-        onPress={() => navigation.navigate("setting")}
-        style={{
-          position: "absolute",
-          bottom: 20,
-          right: 20,
           alignSelf: "center",
           marginBottom: 80,
         }}

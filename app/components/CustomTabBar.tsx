@@ -85,7 +85,8 @@ function getIconComponent(routeName) {
       return Table;
     case "four":
       return Settings;
-
+    case "five":
+      return User;
     default:
       return Home;
   }
