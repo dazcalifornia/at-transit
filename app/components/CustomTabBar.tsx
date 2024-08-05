@@ -10,6 +10,7 @@ import {
   Map,
   Table,
   Info,
+  Newspaper,
 } from "@tamagui/lucide-icons";
 
 function CustomTabBar({ state, descriptors, navigation }) {
@@ -84,9 +85,9 @@ function getIconComponent(routeName) {
     case "three":
       return Table;
     case "four":
-      return Settings;
+      return Newspaper;
     case "five":
-      return User;
+      return Settings;
     default:
       return Home;
   }

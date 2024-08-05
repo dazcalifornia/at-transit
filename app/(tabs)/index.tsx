@@ -27,6 +27,10 @@ import MapView, { Polyline, Marker, Callout } from "react-native-maps";
 import { busRoutes } from "data/busRoutes";
 import { busStops } from "data/busStops";
 
+import PocketBase from "pocketbase";
+
+const pb = new PocketBase("http://141.98.17.52");
+
 // Function to check if a point is close to a polyline
 const isPointNearPolyline = (point, polyline, threshold = 0.001) => {
   for (let i = 0; i < polyline.length - 1; i++) {
@@ -103,6 +107,24 @@ export default function TabOneScreen() {
   const [open, setOpen] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState(null);
   const [nearbyStops, setNearbyStops] = useState([]);
+  const [busRoutes, setBusRoutes] = useState([]);
+  const [busStops, setBusStops] = useState([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      const routeData = await pb.collection("busRoutes").getFullList({
+        sort: "-created",
+      });
+
+      setBusRoutes(routeData);
+
+      const stopData = await pb.collection("busStops").getFullList({
+        sort: "-created",
+      });
+      setBusStops(stopData);
+    };
+    getData();
+  }, []);
 
   useEffect(() => {
     if (selectedRoute) {

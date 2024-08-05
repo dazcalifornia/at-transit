@@ -1,9 +1,28 @@
 export const busRoutes = [
   {
+    id: 0,
+    name: "Brub-Line",
+    schedule: ["04:00 AM", "4:50 AM", "6:10 AM", "12:00 PM", "02:00 PM"],
+    coordinates: [
+      {
+        latitude: 13.0999158,
+        longitude: 100.9216097,
+      },
+      {
+        latitude: 13.099556,
+        longitude: 100.921638,
+      },
+    ],
+  },
+  {
     id: 1,
     name: "8 Bangkok-chainat",
-    schedule: ["08:00 AM", "10:00 AM", "12:00 PM", "02:00 PM"],
+    schedule: ["05:45 AM", "10:00 AM", "12:00 PM", "02:00 PM"],
     coordinates: [
+      {
+        latitude: 13.0999158,
+        longitude: 100.9216097,
+      },
       {
         latitude: 13.811760866470719,
         longitude: 100.55007391800882,

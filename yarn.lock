@@ -5219,16 +5219,18 @@ __metadata:
     babel-preset-expo: "npm:^11.0.6"
     burnt: "npm:^0.12.2"
     expo: "npm:~51.0.9"
+    expo-device: "npm:~6.0.2"
     expo-font: "npm:~12.0.6"
     expo-linking: "npm:~6.3.1"
     expo-location: "npm:^17.0.1"
-    expo-notifications: "npm:^0.28.9"
+    expo-notifications: "npm:~0.28.14"
     expo-permissions: "npm:^14.4.0"
     expo-router: "npm:~3.5.15"
     expo-splash-screen: "npm:~0.27.4"
     expo-status-bar: "npm:^1.12.1"
     expo-system-ui: "npm:~3.0.4"
     expo-web-browser: "npm:~13.0.3"
+    pocketbase: "npm:^0.21.4"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
     react-native: "npm:0.74.1"
@@ -6946,6 +6948,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-device@npm:~6.0.2":
+  version: 6.0.2
+  resolution: "expo-device@npm:6.0.2"
+  dependencies:
+    ua-parser-js: "npm:^0.7.33"
+  peerDependencies:
+    expo: "*"
+  checksum: ba2300590e761aa86f2fcebae2f907121f164ed44dd8c48cd9ad5dbdfd793d8a227eb30994e41795191e2a45cd15b4ec9b24e51f8b49ce5e5d3e547bf42cb44c
+  languageName: node
+  linkType: hard
+
 "expo-file-system@npm:~17.0.1":
   version: 17.0.1
   resolution: "expo-file-system@npm:17.0.1"
@@ -7018,9 +7031,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-notifications@npm:^0.28.9":
-  version: 0.28.9
-  resolution: "expo-notifications@npm:0.28.9"
+"expo-notifications@npm:~0.28.14":
+  version: 0.28.14
+  resolution: "expo-notifications@npm:0.28.14"
   dependencies:
     "@expo/image-utils": "npm:^0.5.0"
     "@ide/backoff": "npm:^1.0.0"
@@ -7032,7 +7045,7 @@ __metadata:
     fs-extra: "npm:^9.1.0"
   peerDependencies:
     expo: "*"
-  checksum: 96fd51b274e08ea4bd31a6fb877540fcfb03f52d218a06b0e3444bf07857e678efacd45d0b5599e21221fd2b5044ef1c82f504369d1e980285cc41b7cb2707fc
+  checksum: 44d116269bc62441f780b7fc828a3ebf7266e6aa90164be9cefd2c897d7f32a00f2b89eeb9c4ed01b89d812dc17232a90c8baf78fed48a1c786be7bebb63f59b
   languageName: node
   linkType: hard
 
@@ -10354,6 +10367,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pocketbase@npm:^0.21.4":
+  version: 0.21.4
+  resolution: "pocketbase@npm:0.21.4"
+  checksum: ef6c69abb6dc89b67c4d4b8076a0b141b16b109f778de1c7750370de91bd3df2cc702e739fc014b129d86858339fd56210c14474215cc12146669bb54fbce566
+  languageName: node
+  linkType: hard
+
 "possible-typed-array-names@npm:^1.0.0":
   version: 1.0.0
   resolution: "possible-typed-array-names@npm:1.0.0"
@@ -12559,6 +12579,13 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: b61b8bb4b4d6a8a00f9d5f931f8c67070eed6ad11feabf4c41744a326987080bfc806a621596c70fbf2e5974eca3ed65bafeeeb22a078071bdfb51d8abd7c013
+  languageName: node
+  linkType: hard
+
+"ua-parser-js@npm:^0.7.33":
+  version: 0.7.38
+  resolution: "ua-parser-js@npm:0.7.38"
+  checksum: 011609d0176952abc60b7a20e0af266a899b34f4c49a6f5097d6af763da27eacaa3752b710ae4d930d7b99508bb8c0b34ebe8042e1d9fdc4056d051b209b0842
   languageName: node
   linkType: hard
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ScrollView,
   Text,
@@ -11,7 +11,11 @@ import {
 import { busRoutes } from "data/busRoutes"; // Adjust the import path accordingly
 import { Bus } from "@tamagui/lucide-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { KeyboardAvoidingView, Platform } from "react-native";
+import { KeyboardAvoidingView, Platform, RefreshControl } from "react-native";
+
+import PocketBase from "pocketbase";
+
+const pb = new PocketBase("http://141.98.17.52");
 
 // Example custom Divider component
 const Divider = () => (
@@ -27,10 +31,30 @@ const Divider = () => (
 
 export default function BusScheduleScreen() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [busRoutes, setBusRoutes] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const getData = async () => {
+    const routeData = await pb.collection("busRoutes").getFullList({
+      requestKey: null,
+    });
+
+    setBusRoutes(routeData);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   const filteredRoutes = busRoutes.filter((route) =>
     route.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await getData();
+    setRefreshing(false);
+  }, [getData]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -56,6 +80,9 @@ export default function BusScheduleScreen() {
               padding: 10,
               paddingBottom: 90, // Adjust the padding bottom to fit the tab bar
             }}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
           >
             <YStack space={10}>
               {filteredRoutes.map((route) => (
