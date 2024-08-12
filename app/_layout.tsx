@@ -1,5 +1,5 @@
 import "../tamagui-web.css";
-
+import React from "react";
 import { useEffect } from "react";
 import { useColorScheme } from "react-native";
 import {
@@ -10,7 +10,9 @@ import {
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { Provider } from "./Provider";
-
+import i18n from "../i18n";
+import { I18nextProvider } from "react-i18next";
+import { LanguageProvider } from "./contexts/LanguageContext";
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -50,25 +52,27 @@ function RootLayoutNav() {
   return (
     <Provider>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen
-            name="(tabs)"
-            options={{
-              headerShown: false,
-            }}
-          />
+        <LanguageProvider>
+          <Stack>
+            <Stack.Screen
+              name="(tabs)"
+              options={{
+                headerShown: false,
+              }}
+            />
 
-          <Stack.Screen
-            name="setting"
-            options={{
-              presentation: "modal",
-              animation: "slide_from_right",
-              gestureEnabled: true,
-              gestureDirection: "horizontal",
-              headerShown: false,
-            }}
-          />
-        </Stack>
+            <Stack.Screen
+              name="setting"
+              options={{
+                presentation: "modal",
+                animation: "slide_from_right",
+                gestureEnabled: true,
+                gestureDirection: "horizontal",
+                headerShown: false,
+              }}
+            />
+          </Stack>
+        </LanguageProvider>
       </ThemeProvider>
     </Provider>
   );

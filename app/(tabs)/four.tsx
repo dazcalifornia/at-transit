@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { RefreshControl } from "react-native";
+import { RefreshControl, useWindowDimensions } from "react-native";
 import { ChevronRight, Bell, Info } from "@tamagui/lucide-icons";
 import {
   YStack,
@@ -18,8 +18,10 @@ import {
   Paragraph,
 } from "tamagui";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import RenderHtml from "react-native-render-html";
 
 import PocketBase from "pocketbase";
+import { useTranslation } from "../hooks/useTranslation";
 
 const pb = new PocketBase("http://141.98.17.52");
 
@@ -29,6 +31,9 @@ interface NewsItem {
   content: string;
   image: string;
   created: string;
+  collectionId: string;
+  collectionName: string;
+  updated: string;
 }
 
 const isThai = (text: string) => /[\u0E00-\u0E7F]/.test(text);
@@ -69,42 +74,73 @@ const summarizeNews = (fullContent: string, maxLength = 200) => {
   return summary;
 };
 
-const NewsItem = ({ title, summary, image, onPress }) => (
-  <Card
-    elevate
-    size="$4"
-    bordered
-    mb="$4"
-    scale={0.9}
-    hoverStyle={{ scale: 0.925 }}
-    onPress={onPress}
-  >
-    <Card.Header padded>
-      <Image
-        source={{ uri: image }}
-        width="100%"
-        height={200}
-        resizeMode="cover"
-      />
-    </Card.Header>
-    <Card.Footer padded>
-      <YStack space="$2">
-        <SizableText fontWeight="bold" fontSize="$5">
-          {title}
-        </SizableText>
-        <SizableText fontSize="$3">{summary}</SizableText>
-      </YStack>
-    </Card.Footer>
-    <Card.Background />
-  </Card>
-);
+const NewsItem = ({ title, summary, image, onPress }: any) => {
+  const { width } = useWindowDimensions();
+
+  return (
+    <Card
+      elevate
+      size="$4"
+      bordered
+      mb="$4"
+      scale={0.9}
+      hoverStyle={{ scale: 0.925 }}
+      onPress={onPress}
+    >
+      <Card.Header padded>
+        <Image
+          source={{ uri: image }}
+          width="100%"
+          height={200}
+          resizeMode="cover"
+        />
+      </Card.Header>
+      <Card.Footer padded>
+        <YStack space="$2">
+          <SizableText fontWeight="bold" fontSize="$5">
+            {title}
+          </SizableText>
+          <RenderHtml
+            contentWidth={width - 32} // Adjust based on your padding
+            source={{ html: summary }}
+          />
+        </YStack>
+      </Card.Footer>
+      <Card.Background />
+    </Card>
+  );
+};
 
 export default function NewsScreen() {
-  const [newsData, setNewsData] = useState([]);
+  const [newsData, setNewsData] = useState<NewsItem[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-  const [selectedNews, setSelectedNews] = useState(null);
+  const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const tabBarHeight = useBottomTabBarHeight();
+  const { width } = useWindowDimensions();
+  const { t } = useTranslation();
+
+  //const getdata = async () => {
+  //  try {
+  //    // Simulating fetching data from your provided array
+  //    const records: NewsItem[] = [
+  //      {
+  //        collectionId: "p265ps9dzmbcz0l",
+  //        collectionName: "news",
+  //        content:
+  //          "<p><strong>Tiptap</strong> is an editor framework designed for creating custom content experiences. Integrate content AI, collaborative editing and commenting functionalities into your tech stack with a few lines of code.</p><p>Explore countless extensions with a focus on easy extensibility with our flexible APIs and minimal code changes.</p>",
+  //        created: "2024-08-10 09:07:54.315Z",
+  //        id: "nxglakpc0q9bjrc",
+  //        image: "gua_g_iw8_aez_ia1_NFFe036XMX.jpeg",
+  //        title: "Tiptab",
+  //        updated: "2024-08-10 09:07:54.315Z",
+  //      },
+  //    ];
+  //    setNewsData(records);
+  //  } catch (error) {
+  //    console.error("Error fetching news data:", error);
+  //  }
+  //};
 
   const getdata = async () => {
     const records = await pb.collection("news").getFullList({
@@ -132,7 +168,7 @@ export default function NewsScreen() {
 
   return (
     <YStack f={1} p="$4" space="$4" pt="$10" backgroundColor="$background">
-      <H2 textAlign="center">News Feed</H2>
+      <H2 textAlign="center">{t("newsfeed")}</H2>
       <Separator />
       <ScrollView
         refreshControl={
@@ -145,7 +181,7 @@ export default function NewsScreen() {
             key={item.id}
             title={item.title}
             summary={summarizeNews(item.content)}
-            image={pb.files.getUrl(item, item.image)}
+            image={`${pb.baseUrl}/api/files/${item.collectionId}/${item.id}/${item.image}`}
             onPress={() => handleNewsPress(item)}
           />
         ))}
@@ -164,17 +200,17 @@ export default function NewsScreen() {
               <YStack padding="$4" space="$4">
                 <Image
                   source={{
-                    uri: pb.files.getUrl(selectedNews, selectedNews.image),
+                    uri: `${pb.baseUrl}/api/files/${selectedNews.collectionId}/${selectedNews.id}/${selectedNews.image}`,
                   }}
                   width="100%"
                   height={200}
                   resizeMode="cover"
                 />
                 <H2>{selectedNews.title}</H2>
-                <Paragraph>
-                  {summarizeNews(selectedNews.content, 150)}
-                </Paragraph>
-                <Paragraph>{selectedNews.content}</Paragraph>
+                <RenderHtml
+                  contentWidth={width - 32} // Adjust based on your padding
+                  source={{ html: selectedNews.content }}
+                />
               </YStack>
             )}
           </ScrollView>

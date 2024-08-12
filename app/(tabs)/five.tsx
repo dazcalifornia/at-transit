@@ -9,16 +9,21 @@ import {
   Separator,
   XStack,
   Button,
+  Text,
 } from "tamagui";
 import * as Notifications from "expo-notifications";
 import { Alert } from "react-native";
 import { busStops } from "data/busStops";
 
 import PocketBase from "pocketbase";
+import { useTranslation } from "../hooks/useTranslation";
+import { LanguageSelector } from "../components/LanguageSelector";
 
 const pb = new PocketBase("http://141.98.17.52");
 
 export default function NewsFeedScreen() {
+  const { t } = useTranslation();
+
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
 
   useEffect(() => {
@@ -86,7 +91,7 @@ export default function NewsFeedScreen() {
 
   return (
     <YStack f={1} p="$4" space="$4" pt="$10" backgroundColor="$background">
-      <H2 textAlign="center">Settings</H2>
+      <H2 textAlign="center">{t("settings")}</H2>
       <Separator />
       <YStack space="$2">
         <SizableText size="$6" fontWeight="bold">
@@ -120,17 +125,9 @@ export default function NewsFeedScreen() {
           icon={<Info />}
           backgroundColor="$backgroundStrong"
         />
+        <Text>{t("changeLanguage")}</Text>
+        <LanguageSelector />
       </YStack>
-      <Button
-        onPress={() => {
-          insertBusStops(busStops);
-        }}
-      >
-        create bus stop
-      </Button>
-      <Button onPress={checkNotificationPermissions}>
-        Check Notification Permissions
-      </Button>
     </YStack>
   );
 }
