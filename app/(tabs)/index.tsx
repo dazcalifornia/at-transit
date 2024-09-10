@@ -24,10 +24,10 @@ import {
   Image,
 } from "tamagui";
 import MapView, { Polyline, Marker, Callout } from "react-native-maps";
-import { busRoutes } from "data/busRoutes";
-import { busStops } from "data/busStops";
-
 import PocketBase from "pocketbase";
+import { useTranslation } from "app/hooks/useTranslation";
+import { PermissionsAndroid, Platform } from "react-native";
+import * as Location from "expo-location";
 
 const pb = new PocketBase("http://141.98.17.52");
 
@@ -104,11 +104,52 @@ const AdComponent = () => (
 );
 
 export default function TabOneScreen() {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState(null);
   const [nearbyStops, setNearbyStops] = useState([]);
   const [busRoutes, setBusRoutes] = useState([]);
   const [busStops, setBusStops] = useState([]);
+  const [mapRef, setMapRef] = useState(null);
+  const [userLocation, setUserLocation] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setUserLocation({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+    })();
+  }, []);
+
+  const centerMapOnRoute = (route) => {
+    if (mapRef && route.coordinates && route.coordinates.length > 0) {
+      const latitudes = route.coordinates.map((coord) => coord.latitude);
+      const longitudes = route.coordinates.map((coord) => coord.longitude);
+      const minLat = Math.min(...latitudes);
+      const maxLat = Math.max(...latitudes);
+      const minLng = Math.min(...longitudes);
+      const maxLng = Math.max(...longitudes);
+
+      mapRef.fitToCoordinates(
+        [
+          { latitude: minLat, longitude: minLng },
+          { latitude: maxLat, longitude: maxLng },
+        ],
+        {
+          edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
+          animated: true,
+        }
+      );
+    }
+  };
 
   useEffect(() => {
     const getData = async () => {
@@ -121,11 +162,18 @@ export default function TabOneScreen() {
       const stopData = await pb.collection("busStops").getFullList({
         sort: "-created",
       });
-      setBusStops(stopData);
+
+      // Convert latitude and longitude to numbers
+      const formattedStopData = stopData.map((stop) => ({
+        ...stop,
+        latitude: parseFloat(stop.latitude),
+        longitude: parseFloat(stop.longitude),
+      }));
+
+      setBusStops(formattedStopData);
     };
     getData();
   }, []);
-
   useEffect(() => {
     if (selectedRoute) {
       const stops = busStops.filter((stop) =>
@@ -138,6 +186,7 @@ export default function TabOneScreen() {
   return (
     <YStack f={1} ai="center">
       <MapView
+        ref={(ref) => setMapRef(ref)}
         style={{ flex: 1, width: "100%", height: "100%" }}
         initialRegion={{
           latitude: 14.586022298685563,
@@ -156,7 +205,10 @@ export default function TabOneScreen() {
         {nearbyStops.map((stop, index) => (
           <Marker
             key={index}
-            coordinate={{ latitude: stop.latitude, longitude: stop.longitude }}
+            coordinate={{
+              latitude: stop.latitude,
+              longitude: stop.longitude,
+            }}
           >
             <View
               style={{
@@ -198,6 +250,21 @@ export default function TabOneScreen() {
             </Callout>
           </Marker>
         ))}
+        {userLocation && (
+          <Marker coordinate={userLocation} title="You are here">
+            <View
+              style={{
+                backgroundColor: "#007AFF",
+                borderRadius: 50,
+                padding: 5,
+                borderWidth: 2,
+                borderColor: "white",
+              }}
+            >
+              <Activity color="white" size={20} />
+            </View>
+          </Marker>
+        )}
       </MapView>
       <Button
         icon={ChevronUp}
@@ -211,7 +278,7 @@ export default function TabOneScreen() {
           marginBottom: 80,
         }}
       />
-      <AdComponent />
+      {/*<AdComponent />*/}
       <Sheet
         modal
         open={open}
@@ -225,7 +292,7 @@ export default function TabOneScreen() {
         <Sheet.Frame padding="$4" space="$5" backgroundColor="$background">
           <Sheet.Handle />
           <H2 textAlign="center" paddingBottom="$4">
-            Select a Route
+            {t("selectRoute")}
           </H2>
           <ScrollView
             style={{ width: "auto" }}
@@ -237,6 +304,7 @@ export default function TabOneScreen() {
                   key={index}
                   onPress={() => {
                     setSelectedRoute(route);
+                    centerMapOnRoute(route);
                     setOpen(false);
                   }}
                   backgroundColor={
@@ -253,11 +321,6 @@ export default function TabOneScreen() {
                         color={selectedRoute === route ? "#007AFF" : "$color"}
                       >
                         {route.name}
-                      </SizableText>
-                      <SizableText
-                        color={selectedRoute === route ? "#007AFF" : "$color"}
-                      >
-                        Route {route.id}
                       </SizableText>
                     </YStack>
                     {selectedRoute === route && (

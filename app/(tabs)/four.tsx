@@ -16,6 +16,7 @@ import {
   Text,
   Sheet,
   Paragraph,
+  useTheme,
 } from "tamagui";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import RenderHtml from "react-native-render-html";
@@ -76,6 +77,14 @@ const summarizeNews = (fullContent: string, maxLength = 200) => {
 
 const NewsItem = ({ title, summary, image, onPress }: any) => {
   const { width } = useWindowDimensions();
+  const theme = useTheme();
+
+  const tagsStyles = {
+    body: {
+      color: theme.color.get(),
+    },
+    // Add more tag styles as needed
+  };
 
   return (
     <Card
@@ -103,6 +112,7 @@ const NewsItem = ({ title, summary, image, onPress }: any) => {
           <RenderHtml
             contentWidth={width - 32} // Adjust based on your padding
             source={{ html: summary }}
+            tagsStyles={tagsStyles}
           />
         </YStack>
       </Card.Footer>
@@ -119,6 +129,14 @@ export default function NewsScreen() {
   const tabBarHeight = useBottomTabBarHeight();
   const { width } = useWindowDimensions();
   const { t } = useTranslation();
+  const theme = useTheme();
+
+  const tagsStyles = {
+    body: {
+      color: theme.color.get(),
+    },
+    // Add more tag styles as needed
+  };
 
   //const getdata = async () => {
   //  try {
@@ -191,6 +209,14 @@ export default function NewsScreen() {
         open={sheetOpen}
         onOpenChange={setSheetOpen}
         snapPoints={[80]}
+        disableDrag
+        dismissOnSnapToBottom
+        animationConfig={{
+          type: "spring",
+          damping: 20,
+          mass: 1.2,
+          stiffness: 250,
+        }}
       >
         <Sheet.Overlay />
         <Sheet.Frame>
@@ -210,6 +236,7 @@ export default function NewsScreen() {
                 <RenderHtml
                   contentWidth={width - 32} // Adjust based on your padding
                   source={{ html: selectedNews.content }}
+                  tagsStyles={tagsStyles}
                 />
               </YStack>
             )}

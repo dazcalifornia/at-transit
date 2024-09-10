@@ -14,6 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAvoidingView, Platform, RefreshControl } from "react-native";
 
 import PocketBase from "pocketbase";
+import { useTranslation } from "app/hooks/useTranslation";
 
 const pb = new PocketBase("http://141.98.17.52");
 
@@ -30,6 +31,7 @@ const Divider = () => (
 );
 
 export default function BusScheduleScreen() {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [busRoutes, setBusRoutes] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -115,7 +117,7 @@ export default function BusScheduleScreen() {
                         ))
                       ) : (
                         <Text fontSize={16} color="$red10">
-                          No schedule available
+                          {t("noschedule")}
                         </Text>
                       )}
                     </YStack>

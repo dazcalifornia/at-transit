@@ -18,6 +18,7 @@ export const LanguageSelector: React.FC = () => {
 
       <Adapt when="sm" platform="touch">
         <Sheet
+          snapPoints={[20]}
           modal
           dismissOnSnapToBottom
           animationConfig={{
@@ -68,7 +69,6 @@ export const LanguageSelector: React.FC = () => {
                 [
                   { code: "en", name: "English" },
                   { code: "th", name: "Thai" },
-                  { code: "fr", name: "Français" },
                 ].map((item, i) => (
                   <Select.Item index={i} key={item.code} value={item.code}>
                     <Select.ItemText>{item.name}</Select.ItemText>

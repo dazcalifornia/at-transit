@@ -1,5 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { ChevronRight, Bell, Info } from "@tamagui/lucide-icons";
+import React, { useState, useEffect, useContext } from "react";
+import {
+  ChevronRight,
+  Bell,
+  Info,
+  MapPin,
+  Moon,
+  Sun,
+} from "@tamagui/lucide-icons";
 import {
   YStack,
   H2,
@@ -10,14 +17,16 @@ import {
   XStack,
   Button,
   Text,
+  useTheme,
 } from "tamagui";
 import * as Notifications from "expo-notifications";
 import { Alert } from "react-native";
-import { busStops } from "data/busStops";
 
 import PocketBase from "pocketbase";
 import { useTranslation } from "../hooks/useTranslation";
 import { LanguageSelector } from "../components/LanguageSelector";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Location from "expo-location";
 
 const pb = new PocketBase("http://141.98.17.52");
 
@@ -25,11 +34,68 @@ export default function NewsFeedScreen() {
   const { t } = useTranslation();
 
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [locationEnabled, setLocationEnabled] = useState(false);
 
   useEffect(() => {
     checkNotificationPermissions();
   }, []);
 
+  useEffect(() => {
+    const loadLanguageSetting = async () => {
+      try {
+        const value = await AsyncStorage.getItem("selectedLanguage");
+        if (value !== null) {
+          //setSelectedLanguage(value);
+        }
+      } catch (e) {
+        console.error("Error loading language setting:", e);
+      }
+    };
+    loadLanguageSetting();
+  }, []);
+
+  useEffect(() => {
+    const loadLocationSetting = async () => {
+      try {
+        const value = await AsyncStorage.getItem("locationEnabled");
+        if (value !== null) {
+          setLocationEnabled(JSON.parse(value));
+        }
+      } catch (e) {
+        console.error("Error loading location setting:", e);
+      }
+    };
+    loadLocationSetting();
+  }, []);
+
+  useEffect(() => {
+    checkNotificationPermissions();
+  }, []);
+
+  const handleLocationToggle = async () => {
+    try {
+      if (locationEnabled) {
+        // Disable location
+        await Location.requestForegroundPermissionsAsync();
+        await Location.stopLocationUpdatesAsync("location-task");
+      } else {
+        // Enable location
+        await Location.requestForegroundPermissionsAsync();
+        await Location.startLocationUpdatesAsync("location-task", {
+          accuracy: Location.Accuracy.Balanced,
+          distanceInterval: 10,
+          timeInterval: 60000,
+        });
+      }
+      await AsyncStorage.setItem(
+        "locationEnabled",
+        JSON.stringify(!locationEnabled)
+      );
+      setLocationEnabled(!locationEnabled);
+    } catch (e) {
+      console.error("Error toggling location setting:", e);
+    }
+  };
   const checkNotificationPermissions = async () => {
     const { status } = await Notifications.getPermissionsAsync();
     setNotificationsEnabled(status === "granted");
@@ -68,38 +134,17 @@ export default function NewsFeedScreen() {
     }
   };
 
-  async function insertBusStops(busStops) {
-    for (const stop of busStops) {
-      const data = {
-        highway_name: stop.highway_name,
-        position_km: stop.position_km,
-        latitude: stop.latitude,
-        longitude: stop.longitude,
-      };
-      const reqData = {
-        busStopData: data,
-      };
-
-      try {
-        const record = await pb.collection("busStops").create(data);
-        console.log("Inserted record:", record);
-      } catch (error) {
-        console.error("Error inserting record:", error);
-      }
-    }
-  }
-
   return (
     <YStack f={1} p="$4" space="$4" pt="$10" backgroundColor="$background">
       <H2 textAlign="center">{t("settings")}</H2>
       <Separator />
       <YStack space="$2">
         <SizableText size="$6" fontWeight="bold">
-          Preferences
+          {t("preferences")}
         </SizableText>
         <ListItem
-          title="Notifications"
-          subTitle={notificationsEnabled ? "Enabled" : "Disabled"}
+          title={t("notification")}
+          subTitle={notificationsEnabled ? `${t("enable")}` : `${t("disable")}`}
           icon={<Bell />}
           backgroundColor="$backgroundStrong"
           iconAfter={
@@ -113,11 +158,27 @@ export default function NewsFeedScreen() {
             </XStack>
           }
         />
+        <ListItem
+          title={t("location")}
+          subTitle={locationEnabled ? `${t("enable")}` : `${t("disable")}`}
+          icon={<MapPin />}
+          backgroundColor="$backgroundStrong"
+          iconAfter={
+            <XStack alignItems="center">
+              <Switch
+                checked={locationEnabled}
+                onCheckedChange={handleLocationToggle}
+              >
+                <Switch.Thumb animation="bouncy" />
+              </Switch>
+            </XStack>
+          }
+        />
       </YStack>
       <Separator />
       <YStack space="$2">
         <SizableText size="$6" fontWeight="bold">
-          About
+          {t("about")}
         </SizableText>
         <ListItem
           title="App Version"
